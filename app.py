@@ -23,13 +23,18 @@ def main():
         
         # Calculate the total amount for the specified debtor
         total_amount = 0
+        low_amount = 0
         for match_name, amount in matches:
             if match_name.strip().lower() == debtor_name.strip().lower():
                 total_amount += int(amount.strip().replace(',', ''))
+                if int(amount.strip().replace(',', '')) < 1200:
+                    low_amount += 1
         
         # Display the result
         if total_amount > 0:
             st.success(f'Total amount debited to {debtor_name}: ₹{total_amount}')
+            st.success(f'Amount after deducting courier charge {debtor_name}: ₹{total_amount - low_amount*50}')
+            
         else:
             st.warning(f'No transactions found for {debtor_name}.')
     elif uploaded_file:
