@@ -21,20 +21,28 @@ def main():
         # Find all matches
         matches = re.findall(pattern, text)
         
-        # Calculate the total amount for the specified debtor
+        # Calculate the total amount for the specified debtor and gather all matching records
         total_amount = 0
         low_amount = 0
+        matching_records = []
+        
         for match_name, amount in matches:
             if match_name.strip().lower() == debtor_name.strip().lower():
-                total_amount += int(amount.strip().replace(',', ''))
-                if int(amount.strip().replace(',', '')) < 1200:
+                transaction_amount = int(amount.strip().replace(',', ''))
+                total_amount += transaction_amount
+                matching_records.append((match_name, transaction_amount))
+                if transaction_amount < 1200:
                     low_amount += 1
         
-        # Display the result
-        if total_amount > 0:
+        # Display matching transactions
+        if matching_records:
+            st.write("### Matching Transactions:")
+            for record in matching_records:
+                st.write(f"Name: {record[0]}, Amount Debited: ₹{record[1]}")
+                
+            # Display the total amount
             st.success(f'Total amount debited to {debtor_name}: ₹{total_amount}')
-            st.success(f'Amount after deducting courier charge {debtor_name}: ₹{total_amount - low_amount*50}')
-            
+            st.success(f'Amount after deducting courier charge for {debtor_name}: ₹{total_amount - low_amount*50}')
         else:
             st.warning(f'No transactions found for {debtor_name}.')
     elif uploaded_file:
